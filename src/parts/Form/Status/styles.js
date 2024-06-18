@@ -1,7 +1,8 @@
 // Imports
 // ------------
 import styled, { css } from 'styled-components';
-import { bp, Div, H3 } from '@tackl';
+import { bp, Div, H5 } from '@tackl';
+import { emStyles } from '@tackl/type';
 
 // Exports
 // ------------
@@ -14,40 +15,115 @@ export const Col = styled(Div)(props => css`
 `);
 
 export const StickyJacket = styled(Div)(props => css`
-    position: sticky;
-    top: 0;
+    position: relative;
+    height: 100%;
+
+    div + div {
+        height: calc(100% - 10rem);
+
+        > div {
+            height: 100%;
+        }
+    }
 `);
 
 export const Header = styled.div(props => css`
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
     gap: 1.2rem;
 
     margin-bottom: 3.6rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid ${props.theme.colors.global.black10};
 `);
 
-export const Title = styled(H3)(props => css`
+export const Title = styled(H5)(props => css`
     color: ${props.$dark ? props.theme.colors.global.black : props.theme.colors.global.white};
+    font-size: 1.6rem;
 `);
 
-export const Progress = styled.div(props => css`
-    position: relative;
+export const Switch = styled(Div)(props => css`
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: .6rem;
 
-    svg {
-        width: 1.6rem;
-        height: 1.6rem;
-    }
+    border-radius: 6rem;
+    padding: .4rem;
 
-    span {
-        text-transform: uppercase;
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: ${props.theme.colors.brand.bc4};
+    background: linear-gradient(180deg, #BDE0FE 0%, #CDB4DB 100%);
+`);
+
+export const Tab = styled.button(props => css`
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: .6rem 1.2rem;
+
+    border-radius: 2.4rem;
+    background: transparent;
+
+    ${emStyles}
+    color: ${props.theme.colors.global.white};
+
+    ${props.disabled && css` background: transparent; `}
+
+    ${props.isActive && css`
+        color: ${props.theme.colors.brand.bc1};
+        background: ${props.theme.colors.global.white};
+    `}
+`);
+
+export const Basic = styled(Div)(props => css`
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: center;
+    justify-items: stretch;
+`);
+
+export const Block = styled(Div)(props => css`
+    position: relative;
+    min-width: 60%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    gap: 1.2rem;
+    padding: 2.4rem;
+    border-radius: 1.2rem;
+    background: ${props.theme.colors.brand.bc4o20};
+
+    ${bp.large`
+        padding: 3.6rem;
+    `}
+
+    div {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        align-items: center;
+
+        em {
+            font-size: 1.8rem;
+        }
+
+        span {
+            font-size: 1.6rem;
+            opacity: 0.6;
+
+            &.isbig {
+                font-family: ${props.theme.font.type.heading};
+                font-size: 3.6rem !important;
+                font-weight: 500;
+                opacity: 1 !important;
+            }
+        }
     }
 `);
 
@@ -153,11 +229,10 @@ export const CelLink = styled.a(props => css`
     z-index: 2;
     
     display: flex;
-    gap: .3rem;
+    gap: .6rem;
     justify-content: center;
     align-items: center;
     
-
     transition: all .3s ${props.theme.easing.bezzy};
 
     svg {
@@ -167,8 +242,9 @@ export const CelLink = styled.a(props => css`
 
     span {
         color: ${props.theme.colors.global.black};
-        font-size: 1.2rem;
-        font-weight: 600;
+        font-family: ${props.theme.font.type.heading};
+        font-size: 1.2rem !important;
+        font-weight: 500 !important;
         letter-spacing: 1px;
         text-transform: uppercase;
 
@@ -177,5 +253,135 @@ export const CelLink = styled.a(props => css`
         -webkit-text-fill-color: transparent;
         background-clip: text;
         text-fill-color: transparent;
+    }
+
+    &:hover {
+        span {
+            color: ${props.theme.colors.global.black};
+            background-clip: none;
+            -webkit-background-clip: none;
+            -webkit-text-fill-color: unset;
+        }
+    }
+
+    ${props.$isDark && css`
+        span {
+            color: ${props.theme.colors.global.black};
+            background-clip: none;
+            -webkit-background-clip: none;
+            -webkit-text-fill-color: unset;
+        }
+
+        svg {
+            padding: .1rem;
+            background: white;
+            border-radius: 50%;
+        }
+    `}
+`);
+
+
+export const Terminal = styled(Div)(props => css`
+    position: relative;
+    z-index: 2;
+
+    border: 1px solid ${props.theme.colors.global.white};
+    border-width: 18px 2px 2px 2px;
+    border-radius: .3rem;
+    padding: 2.4rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    height: 100%;
+
+    background: linear-gradient(180deg, rgba(255, 200, 221, 0.8) 0%, rgba(189, 224, 254, 0.8) 100%);
+    box-shadow: 12px 4px 24px rgba(0, 0, 0, 0.12);
+
+    &:before {
+        content: '';
+        position: absolute;
+        top: -1.2rem; left: .6rem;
+        z-index: 2;
+
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: ${props.theme.colors.brand.bc4};
+    }
+
+    &:after {
+        content: '';
+        position: absolute;
+        top: -1.2rem; left: 1.6rem;
+        z-index: 2;
+
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: ${props.theme.colors.brand.bc3};
+    }
+
+    > div {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        height: auto !important;
+
+        width: 100%;
+
+        em {
+            font-family: ${props.theme.font.type.heading};
+            font-size: 1.4rem;
+            font-weight: 500;
+            min-width: max-content;
+            padding-right: .6rem;
+        }
+
+        span {
+            font-family: ${props.theme.font.type.heading};
+            font-size: 1.4rem;
+            font-weight: 400;
+            word-break: break-word;
+        }
+    }
+
+    hr {
+        width: 100%;
+        border: none;
+        border-top: 1px solid ${props.theme.colors.global.white};
+    }
+    
+    ${Title} {
+        color: ${props.theme.colors.global.black};
+        font-weight: 600;
+    }
+`);
+
+export const LogJacket = styled(Div)(props => css`
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 1.2rem;
+    height: 100%;
+    overflow-y: scroll;
+    max-height: 20vh !important;
+
+    &::-webkit-scrollbar {
+        display: block;
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 12px rgba(255,255,255,0.5); 
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 12px rgba(255,255,255,1); 
     }
 `);
