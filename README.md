@@ -1,2 +1,6 @@
 # lumina-front
-frontend for lumina
+Frontend for lumina.
+
+`npm install`
+
+`npm run dev`

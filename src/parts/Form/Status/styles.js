@@ -293,7 +293,7 @@ export const Terminal = styled(Div)(props => css`
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
-    height: 100%;
+    height: 55vh;
 
     background: linear-gradient(180deg, rgba(255, 200, 221, 0.8) 0%, rgba(189, 224, 254, 0.8) 100%);
     box-shadow: 12px 4px 24px rgba(0, 0, 0, 0.12);
@@ -368,7 +368,7 @@ export const LogJacket = styled(Div)(props => css`
     gap: 1.2rem;
     height: 100%;
     overflow-y: scroll;
-    max-height: 20vh !important;
+    /* max-height: 20vh !important; */
 
     &::-webkit-scrollbar {
         display: block;
