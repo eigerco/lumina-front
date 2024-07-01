@@ -5,6 +5,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import init, { NodeClient, NodeConfig } from '@public/lumina-node-wasm';
 import Input from './Input';
+import Textarea from './Textarea';
 import Button from '@parts/Button';
 import Status from './Status';
 import Terminal from './Terminal';
@@ -85,7 +86,6 @@ const Form = () => {
         }
     };
 
-
     // NOTE • Load the config and initialize the WASM module when the page loads
     useEffect(() => {
         const loadConfig = async () => {
@@ -139,9 +139,6 @@ const Form = () => {
     useEffect(() => {
         if(node) {
             const timer = setInterval(async () => {
-                // const info = await node.syncer_info();
-                // const peers = await node.connected_peers();
-                // const head = await node.get_network_head_header();
                 const events = await node.events_channel();
 
                 if (nodeInfo.head) {
@@ -198,16 +195,20 @@ const Form = () => {
 
 
     const handleGhash = (e) => {
-        setConfig({
-            ...config,
-            genesis_hash: e.target.value
+        setConfig((config) => {
+            return {
+                ...config,
+                genesis_hash: e.target.value
+            }
         });
     }
 
     const handleBnodes = (e) => {
-        setConfig({
-            ...config,
-            bootnodes: [e.target.value]
+        setConfig((config) => {
+            return {
+                ...config,
+                bootnodes: [e.target.value]
+            }
         });
     }
 
@@ -229,9 +230,11 @@ const Form = () => {
     }
 
     const handleInput = (e) => {
-        setStats({
-            ...stats,
-            [e.target.name]: e.target.value
+        setStats((stats) => {
+            return {
+                ...stats,
+                [e.target.name]: e.target.value
+            }
         });
     }
 
@@ -377,10 +380,10 @@ const Form = () => {
                     </NetworkList>
 
                     <h3>Genesis Hash</h3>
-                    <Input value={config?.genesis_hash} onChange={handleGhash} placeholder="Genesis Hash..." />
+                    <Input value={config?.genesis_hash} onChange={(e) => handleGhash(e)} placeholder="Genesis Hash..." />
 
-                    <h3>Bootnodes</h3>
-                    <Input value={config?.bootnodes} onChange={handleBnodes} placeholder="Bootnodes..." />
+                    <h3>Bootnodes <small>(Comma separate your addresses)</small></h3>
+                    <Textarea value={config?.bootnodes} onChange={(e) => handleBnodes(e)} placeholder="Bootnodes..." />
 
                     <div>
                         <Button label="Start" onClick={initiateNode} />

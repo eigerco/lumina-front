@@ -54,6 +54,13 @@ export const Container = styled(Div)(props => css`
 
     transition: all 1.2s ${props.theme.easing.bezzy};
 
+    h3 {
+        small {
+            font-size: 1.3rem;
+            opacity: 0.6;
+        }
+    }
+
     ${bp.large` padding: 3.6rem; `}
 
     ${props.$begin && css`
