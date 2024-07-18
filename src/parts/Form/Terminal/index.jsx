@@ -48,15 +48,15 @@ const Terminal = ({ isActive, isStopped }) => {
     }
 
     useEffect(() => {
+        // Animate the object when isActive
         if (objectToAnimate.current && isActive) {
             objectToAnimate.current.emitEvent('mouseHover');
         }
 
+        // Stop the animation when isStopped. The event that is triggered will destroy the object from the canvas.
         if (objectToAnimate.current && isStopped) {
             objectToAnimate.current.emitEvent('stateChange');
         }
-
-        console.log(objectToAnimate.current);
     }, [isActive, isStopped]);
 
     return (
