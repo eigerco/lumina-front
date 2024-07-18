@@ -1,9 +1,12 @@
 // Imports
 // ------------
-import React, { useEffect, useState } from 'react';
-import Spline from '@splinetool/react-spline';
+import React, { useRef, useEffect, useState } from 'react';
 import Typewriter from 'typewriter-effect';
 import Icon from '@icon';
+
+// Spline
+// ------------
+const Spline = React.lazy(() => import('@splinetool/react-spline'));
 
 // Styles
 // ------------
@@ -11,7 +14,7 @@ import { Jacket, SplineJacket, Panel, List } from './styles';
 
 // Component
 // ------------
-const Terminal = () => {
+const Terminal = ({ isActive, isStopped }) => {
     // NOTE • States
     const [next, setNext] = useState({
         init: false,
@@ -22,29 +25,42 @@ const Terminal = () => {
     });
 
     useEffect(() => {
-        const init = setTimeout(() => {
-            setNext(prev => ({
-                ...prev,
-                init: true,
-            }))
-        }, 500);
+        if(isActive) {
+            const init = setTimeout(() => {
+                setNext(prev => ({
+                    ...prev,
+                    init: true,
+                }))
+            }, 500);
+    
+            return () => clearTimeout(init);
+        }
+    }, [isActive]);
 
-        return () => clearTimeout(init);
-    }, []);
+    // Spline Stuff
+    // ------
+    const objectToAnimate = useRef();
+
+    function onLoad(spline) {
+        const obj = spline.findObjectByName('Logo-Mark');
+
+        objectToAnimate.current = obj;
+    }
 
     useEffect(() => {
-        const step1 = setTimeout(() => {
-            setNext(prev => ({
-                ...prev,
-                step1: true,
-            }))
-        }, 2000);
+        if (objectToAnimate.current && isActive) {
+            objectToAnimate.current.emitEvent('mouseHover');
+        }
 
-        return () => clearTimeout(step1);
-    }, [next.init]);
+        if (objectToAnimate.current && isStopped) {
+            objectToAnimate.current.emitEvent('stateChange');
+        }
+
+        console.log(objectToAnimate.current);
+    }, [isActive, isStopped]);
 
     return (
-        <Jacket>
+        <Jacket $isStopped={isStopped}>
             <Panel>
                 {next.init && (
                     <span>
@@ -59,7 +75,17 @@ const Terminal = () => {
                                 typewriter.typeString('Celestia light start...')
                                 .changeDelay(25)
                                 .changeDeleteSpeed(25)
-                                .start();
+                                .start()
+                                .callFunction(() => {
+                                    const step1 = setTimeout(() => {
+                                        setNext(prev => ({
+                                            ...prev,
+                                            step1: true,
+                                        }))
+                                    }, 1000);
+                                    
+                                    return () => clearTimeout(step1);
+                                });
                             }}
                         />
                     </span>
@@ -182,7 +208,11 @@ const Terminal = () => {
                 </List>
             </Panel>
             <SplineJacket>
-                <Spline scene="https://prod.spline.design/vS5y3FkvJJqrWPgq/scene.splinecode" />
+                <Spline
+                    // scene="https://prod.spline.design/vS5y3FkvJJqrWPgq/scene.splinecode" // Version 1 - animates automatically
+                    scene="https://prod.spline.design/mfFDm5n4Y7fcpaad/scene.splinecode" // Version 2 with event based animation
+                    onLoad={onLoad}
+                />
             </SplineJacket>
         </Jacket>
     );

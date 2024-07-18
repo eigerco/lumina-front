@@ -6,6 +6,25 @@ import { emStyles } from '@tackl/type';
 
 // Exports
 // ------------
+export const Jacket = styled(Div)(props => css`
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2.4rem;
+
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+
+    transition: all .4s ${props.theme.easing.bezzy};
+
+    ${props.$isActive && css`
+        pointer-events: all;
+        opacity: 1;
+        transition-delay: .4s;
+    `}
+`);
+
 export const Col = styled(Div)(props => css`
     ${props.$isCenter && css`
         display: flex;
