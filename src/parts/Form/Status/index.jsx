@@ -14,6 +14,7 @@ import { usePlausible } from 'next-plausible';
 // Styles
 // ------------
 import {
+    Jacket,
     Col,
     StickyJacket,
     Header,
@@ -35,6 +36,7 @@ import {
 // Component
 // ------------
 const StatusBoard = ({
+    isActive,
     status,
     stats,
     handleReload,
@@ -69,7 +71,7 @@ const StatusBoard = ({
     }, [eventData, tab]);
 
     return (
-        <>
+        <Jacket $isActive={isActive}>
             <Grid $noPadding>
                 <Col $small="1/3" $medium="1/7" $large="1/7">
                     <StickyJacket>
@@ -196,7 +198,6 @@ const StatusBoard = ({
                             <ButtonJacket>
                                 <Button icoL icon="back" label="Restart" onClick={handleReload} />
                                 <LinkGroup>
-                                    <Link icon="mint" onClick={() => plausible('NFT Button Clicked')} label="CLAIM LIMITED NFT" preText="sync to 1%" link="https://modularium.art/drop/modularsummit" rel="noopener noreferrer" disabled={stats.syncedPercentage < 1} />
                                     <LinkGroupSub>
                                         <Link icon="github" link="https://github.com/eigerco/lumina" rel="noopener noreferrer" />
                                         <Link icon="eiger" link="https://www.eiger.co/" rel="noopener noreferrer" />
@@ -207,7 +208,7 @@ const StatusBoard = ({
                     </Grid>
                 </Col>
             </Grid>
-        </>
+        </Jacket>
     );
 }
 

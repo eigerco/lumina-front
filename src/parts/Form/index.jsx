@@ -2,7 +2,7 @@
 
 // Imports
 // ------------
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext, useLayoutEffect } from 'react';
 import init, { Network, NodeClient, NodeConfig } from '@public/lumina-node-wasm';
 import Textarea from './Textarea';
 import Button from '@parts/Button';
@@ -30,7 +30,7 @@ const Form = () => {
     const plausible = usePlausible();
 
     // NOTE • States
-    const [display, setDisplay] = useState(false);
+    const [display, setDisplay] = useState(true);
     const [node, setNode] = useState();
     const [_events, setEvents] = useState();
     const [network, setNetwork] = useState();
@@ -75,7 +75,7 @@ const Form = () => {
     }, [node]);
 
     // NOTE • Browser detection
-    useEffect(() => {
+    useLayoutEffect(() => {
         if(browserName === 'Chrome'
         || browserName === 'Brave'
         || browserName === 'Vivaldi'
@@ -417,8 +417,6 @@ const Form = () => {
                                         }}
                                     />
                                 </Title>
-                                <p>In the meantime&hellip;</p>
-                                <Link isLight icon="mint" onClick={() => plausible('NFT Button Clicked')} label="CLAIM LIMITED NFT" link="https://modularium.art/drop/modularsummit" rel="noopener noreferrer" />
                             </>
                         )
                     }
@@ -472,20 +470,17 @@ const Form = () => {
                 >
 
                     <Container $go $activated={go}>
-                        {nodeInitiate && (
-                            <Terminal />
-                        )}
-
-                        {statusInitiated && (
-                            <Status
-                                status={nodeStatus}
-                                stats={stats}
-                                handleInput={handleInput}
-                                handleReload={handleReload}
-                                eventData={eventData}
-                                visualData={visualData}
-                            />
-                        )}
+                        <Terminal isActive={nodeInitiate} isStopped={statusInitiated} />
+                        
+                        <Status
+                            isActive={statusInitiated}
+                            status={nodeStatus}
+                            stats={stats}
+                            handleInput={handleInput}
+                            handleReload={handleReload}
+                            eventData={eventData}
+                            visualData={visualData}
+                        />
                     </Container>
                 
             </Jacket>

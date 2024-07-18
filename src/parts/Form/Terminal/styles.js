@@ -9,6 +9,14 @@ export const Jacket = styled(Section)(
     props => css`
         width: 100%;
         min-width: 100vw;
+        height: 100%;
+
+        transition: all .4s ${props.theme.easing.bezzy};
+
+        ${props.$isStopped && css`
+            pointer-events: none;
+            opacity: 0;
+        `}
     `
 );
 
