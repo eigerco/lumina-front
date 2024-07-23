@@ -383,7 +383,7 @@ const Form = () => {
                     {
                         display ? (
                             <>
-                                <Title>
+                                <Title data-id="first-title">
                                     <Typewriter
                                         options={{
                                             delay: 25,
@@ -394,7 +394,12 @@ const Form = () => {
                                             typewriter.typeString('Start your Celestia light node')
                                             .changeDelay(25)
                                             .changeDeleteSpeed(25)
-                                            .start();
+                                            .start()
+                                            .callFunction(() => {
+                                                // Add className to first-title
+                                                const title = document.querySelector('[data-id="first-title"]');
+                                                title.classList.add('test-ready');
+                                            });
                                         }}
                                     />
                                 </Title>
