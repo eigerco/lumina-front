@@ -1,14 +1,32 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
+* Set up a logging layer that direct logs to the browser's console.
+*/
+export function setup_logging(): void;
+/**
 * @param {(MessageEvent)[]} queued_events
 * @returns {Promise<void>}
 */
 export function run_worker(queued_events: (MessageEvent)[]): Promise<void>;
 /**
-* Set up a logging layer that direct logs to the browser's console.
+* Type of worker to run lumina in. Allows overriding automatically detected worker kind
+* (which should usually be appropriate).
 */
-export function setup_logging(): void;
+export enum NodeWorkerKind {
+/**
+* Run in [`SharedWorker`]
+*
+* [`SharedWorker`]: https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker
+*/
+  Shared = 0,
+/**
+* Run in [`Worker`]
+*
+* [`Worker`]: https://developer.mozilla.org/en-US/docs/Web/API/Worker
+*/
+  Dedicated = 1,
+}
 /**
 * Supported Celestia networks.
 */
@@ -29,24 +47,6 @@ export enum Network {
 * Private local network.
 */
   Private = 3,
-}
-/**
-* Type of worker to run lumina in. Allows overriding automatically detected worker kind
-* (which should usually be appropriate).
-*/
-export enum NodeWorkerKind {
-/**
-* Run in [`SharedWorker`]
-*
-* [`SharedWorker`]: https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker
-*/
-  Shared = 0,
-/**
-* Run in [`Worker`]
-*
-* [`Worker`]: https://developer.mozilla.org/en-US/docs/Web/API/Worker
-*/
-  Dedicated = 1,
 }
 /**
 */
@@ -286,7 +286,6 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly run_worker: (a: number, b: number) => number;
   readonly setup_logging: () => void;
   readonly __wbg_nodeconfig_free: (a: number) => void;
   readonly __wbg_get_nodeconfig_network: (a: number) => number;
@@ -337,11 +336,12 @@ export interface InitOutput {
   readonly __wbg_set_connectioncounterssnapshot_num_established: (a: number, b: number) => void;
   readonly __wbg_get_networkinfosnapshot_num_peers: (a: number) => number;
   readonly __wbg_set_networkinfosnapshot_num_peers: (a: number, b: number) => void;
+  readonly run_worker: (a: number, b: number) => number;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
-  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h6834990ad61ebde4: (a: number, b: number, c: number) => void;
-  readonly _dyn_core__ops__function__Fn__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h5ef62ec5831b27e6: (a: number, b: number, c: number) => void;
+  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h3d0e603b2f2c4c1a: (a: number, b: number, c: number) => void;
+  readonly _dyn_core__ops__function__Fn__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h37e92c908821fd25: (a: number, b: number, c: number) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hce008bf971f892d0: (a: number, b: number, c: number, d: number) => void;
   readonly _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h5475ed62f1980eea: (a: number, b: number) => void;
