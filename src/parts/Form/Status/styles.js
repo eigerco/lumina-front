@@ -15,6 +15,9 @@ export const Jacket = styled(Div)(props => css`
     height: 100%;
     pointer-events: none;
     opacity: 0;
+    max-height: 0rem;
+    will-change: max-height, opacity;
+    overflow: hidden;
 
     transition: all .4s ${props.theme.easing.bezzy};
 
@@ -22,6 +25,7 @@ export const Jacket = styled(Div)(props => css`
         pointer-events: all;
         opacity: 1;
         transition-delay: .4s;
+        max-height: 9999rem;
     `}
 `);
 

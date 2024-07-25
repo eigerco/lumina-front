@@ -10,12 +10,14 @@ export const Jacket = styled(Section)(
         width: 100%;
         min-width: 100vw;
         height: 100%;
+        max-height: 80vh;
 
         transition: all .4s ${props.theme.easing.bezzy};
 
         ${props.$isStopped && css`
             pointer-events: none;
             opacity: 0;
+            max-height: 0vh;
         `}
     `
 );
@@ -47,6 +49,8 @@ export const Panel = styled(Div)(props => css`
     
     background: linear-gradient(180deg, rgba(255, 200, 221, 0.8) 0%, rgba(189, 224, 254, 0.8) 100%);
     box-shadow: 12px 4px 24px rgba(0, 0, 0, 0.12);
+
+    ${bp.medium` width: 40%; `}
 
     ${bp.large` width: auto; `}
 
