@@ -209,8 +209,8 @@ const Terminal = ({ isActive, isStopped }) => {
             </Panel>
             <SplineJacket>
                 <Spline
-                    scene="https://prod.spline.design/vS5y3FkvJJqrWPgq/scene.splinecode" // Version 1 - animates automatically
-                    // scene="https://prod.spline.design/mfFDm5n4Y7fcpaad/scene.splinecode" // Version 2 with event based animation
+                    // scene="https://prod.spline.design/vS5y3FkvJJqrWPgq/scene.splinecode" // Version 1 - animates automatically
+                    scene="https://prod.spline.design/mfFDm5n4Y7fcpaad/scene.splinecode" // Version 2 with event based animation
                     onLoad={onLoad}
                 />
             </SplineJacket>
