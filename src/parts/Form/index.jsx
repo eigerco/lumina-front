@@ -120,6 +120,12 @@ const Form = () => {
             const timer = setInterval(async () => {
                 const peers = await node.connected_peers();
 
+                if(peers) {
+                    const newChannel = await node.events_channel();
+    
+                    console.log('latest: ' + newChannel.name);
+                }
+
                 setStats((stats) => {
                     return {
                         ...stats,
@@ -299,6 +305,8 @@ const Form = () => {
             const events = await newNode.events_channel();
             events.onmessage = onNodeEvent;
             setEvents(events);
+
+            console.log('start: ' + events.name);
 
             await newNode.start(newConfig);
 
