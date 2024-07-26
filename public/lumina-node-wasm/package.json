@@ -1,5 +1,6 @@
 {
   "name": "lumina-node-wasm",
+  "type": "module",
   "collaborators": [
     "Eiger <hello@eiger.co>"
   ],
@@ -15,7 +16,7 @@
     "lumina_node_wasm.js",
     "lumina_node_wasm.d.ts"
   ],
-  "module": "lumina_node_wasm.js",
+  "main": "lumina_node_wasm.js",
   "homepage": "https://www.eiger.co",
   "types": "lumina_node_wasm.d.ts",
   "sideEffects": [
