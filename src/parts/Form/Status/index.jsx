@@ -198,6 +198,7 @@ const StatusBoard = ({
                             <ButtonJacket>
                                 <Button icoL icon="back" label="Restart" onClick={handleReload} />
                                 <LinkGroup>
+                                <Link icon="mint" onClick={() => plausible('NFT Button Clicked')} preText="sync to 1%" label="Mint Light Node NFT" link="https://modularium.art/drop/lightnode" rel="noopener noreferrer" disabled={stats.syncedPercentage < 1} />
                                     <LinkGroupSub>
                                         <Link icon="github" link="https://github.com/eigerco/lumina" rel="noopener noreferrer" />
                                         <Link icon="eiger" link="https://www.eiger.co/" rel="noopener noreferrer" />
