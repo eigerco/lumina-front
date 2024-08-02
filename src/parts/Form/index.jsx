@@ -123,7 +123,7 @@ const Form = () => {
                 if(peers) {
                     const newChannel = await node.events_channel();
     
-                    console.log('latest: ' + newChannel.name);
+                    // console.log('latest: ' + newChannel.name);
                 }
 
                 setStats((stats) => {
@@ -306,7 +306,7 @@ const Form = () => {
             events.onmessage = onNodeEvent;
             setEvents(events);
 
-            console.log('start: ' + events.name);
+            // console.log('start: ' + events.name);
 
             await newNode.start(newConfig);
 
