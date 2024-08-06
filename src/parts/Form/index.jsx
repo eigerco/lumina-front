@@ -8,12 +8,11 @@ import Textarea from './Textarea';
 import Button from '@parts/Button';
 import Status from './Status';
 import Terminal from './Terminal';
-import Link from '@parts/Link';
 import Icon from '@icon';
 import Typewriter from 'typewriter-effect';
 import { v4 as uuidv4 } from 'uuid';
 import { GlobalContext } from '@parts/Contexts';
-import { browserName, browserVersion } from 'react-device-detect';
+import { isChrome, isFirefox, isChromium, isMobileSafari, isSafari, isOpera } from 'react-device-detect';
 import { usePlausible } from 'next-plausible';
 
 // Styles
@@ -76,16 +75,11 @@ const Form = () => {
 
     // NOTE • Browser detection
     useLayoutEffect(() => {
-        if(browserName === 'Chrome'
-        || browserName === 'Brave'
-        || browserName === 'Vivaldi'
-        || browserName === 'Opera'
-        || browserName === 'Chromium'
-        || browserName === 'Firefox' && browserVersion >= 125) {
+        if(isChrome || isFirefox || isChromium || isMobileSafari || isSafari || isOpera) {
             setDisplay(true)
-        } else (
+        } else {
             setDisplay(false)
-        )
+        }
     }, []);
 
     const initConfig = () => {
