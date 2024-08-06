@@ -278,18 +278,29 @@ export const CelLink = styled.a(props => css`
     }
 
     span {
-        color: ${props.theme.colors.global.black};
+        position: relative;
+
+        color: ${props.theme.colors.global.black60};
         font-family: ${props.theme.font.type.heading};
         font-size: 1.2rem !important;
         font-weight: 500 !important;
         letter-spacing: 1px;
         text-transform: uppercase;
 
-        background: linear-gradient(180deg, #CDB4DB 0%, #A2D2FF 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-fill-color: transparent;
+        transition: all .3s ease-in-out;
+
+        &:before {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 0;
+            z-index: -1;
+
+            width: 0%;
+            height: 1px;
+            border-radius: 1.2rem;
+            background: ${props.theme.colors.global.black};
+            transition: all .3s ease-in-out;
+        }
     }
 
     &:hover {
@@ -298,12 +309,16 @@ export const CelLink = styled.a(props => css`
             background-clip: none;
             -webkit-background-clip: none;
             -webkit-text-fill-color: unset;
+
+            &:before {
+                width: 100%;
+            }
         }
     }
 
     ${props.$isDark && css`
         span {
-            color: ${props.theme.colors.global.black};
+            color: ${props.theme.colors.global.black60};
             background-clip: none;
             -webkit-background-clip: none;
             -webkit-text-fill-color: unset;
@@ -313,6 +328,15 @@ export const CelLink = styled.a(props => css`
             padding: .1rem;
             background: white;
             border-radius: 50%;
+        }
+
+        &:hover {
+            span {
+                color: ${props.theme.colors.global.black};
+                &:before {
+                    width: 100%;
+                }
+            }
         }
     `}
 `);
