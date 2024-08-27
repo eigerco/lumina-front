@@ -12,7 +12,7 @@ import Icon from '@icon';
 import Typewriter from 'typewriter-effect';
 import { v4 as uuidv4 } from 'uuid';
 import { GlobalContext } from '@parts/Contexts';
-import { isChrome, isFirefox, isChromium, isMobileSafari, isSafari, isOpera } from 'react-device-detect';
+// import { isChrome, isFirefox, isChromium, isMobileSafari, isSafari, isOpera } from 'react-device-detect';
 import { usePlausible } from 'next-plausible';
 
 // Styles
@@ -74,13 +74,13 @@ const Form = () => {
     }, [node]);
 
     // NOTE • Browser detection
-    useLayoutEffect(() => {
-        if(isChrome || isFirefox || isChromium || isMobileSafari || isSafari || isOpera) {
-            setDisplay(true)
-        } else {
-            setDisplay(false)
-        }
-    }, []);
+    // useLayoutEffect(() => {
+    //     if(isChrome || isFirefox || isChromium || isMobileSafari || isSafari || isOpera) {
+    //         setDisplay(true)
+    //     } else {
+    //         setDisplay(false)
+    //     }
+    // }, []);
 
     const initConfig = () => {
         const tempConfig = NodeConfig.default(Network.Mainnet)
