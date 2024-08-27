@@ -3,7 +3,7 @@
 // Imports
 // ------------
 import React, { useState, useEffect, useRef, useContext, useLayoutEffect } from 'react';
-import init, { Network, NodeClient, NodeConfig } from '@public/lumina-node-wasm';
+import init, { Network, NodeClient, NodeConfig } from 'lumina-node-shim';
 import Textarea from './Textarea';
 import Button from '@parts/Button';
 import Status from './Status';
@@ -18,6 +18,8 @@ import { usePlausible } from 'next-plausible';
 // Styles
 // ------------
 import { Blanket, Jacket, ImageContainer, Container, Title, NetworkList, NetworkItem } from './styles';
+
+let worker_started = false;
 
 // Component
 // ------------
@@ -91,32 +93,34 @@ const Form = () => {
         setCombinedConfig(tempConfig);
     };
 
-    const initWASM = async () => {
-        try {
-            await init();
-            initConfig();
-        } catch (error) {
-            console.error('Failed to initialize WASM:', error);
-        }
-    };
-
     // NOTE • Generate a unique ID for the node
     const nodeUid = uuidv4();
 
     // NOTE • Load the config and initialize the WASM module when the page loads
     useEffect(() => {
-        initWASM();
+        const initWasm = async () => {
+            try {
+                setNode(await init());
+                initConfig();
+            } catch (error) {
+                console.error('Failed to initialize WASM:', error);
+            }
+        }
+        if (!worker_started) {
+            worker_started = true;
+            initWasm();
+        }
     }, []);
 
     // NOTE • Periodically poll node for data that doesn't come from events
     useEffect(() => {
-        if(node) {
+        if(node && statusInitiated) {
             const timer = setInterval(async () => {
                 const peers = await node.connected_peers();
 
                 if(peers) {
                     const newChannel = await node.events_channel();
-    
+
                     // console.log('latest: ' + newChannel.name);
                 }
 
@@ -126,14 +130,13 @@ const Form = () => {
                         connectedPeers: peers,
                     }
                 });
-    
+
                 setNodeStatus('Data availability sampling in progress');
             }, 2000);
-    
+
             return () => clearInterval(timer);
         }
     }, [node]);
-
 
     // NOTE • Periodically track user activity
     useEffect(() => {
@@ -189,7 +192,7 @@ const Form = () => {
     // NOTE • Start the node
     const startNode = async () => {
         if (!bootnodes || bootnodes.length === 0) {
-            alert('Genesis hash and at least one bootnode are required.');
+            console.error('Genesis hash and at least one bootnode are required.');
             return;
         }
         try {
@@ -292,19 +295,13 @@ const Form = () => {
             let newConfig = combinedConfig;
             setCombinedConfig({ bootnodes: bootnodes });
 
-            const workerUrl = new URL('/worker.js', window.location.origin);
-            const newNode = await new NodeClient(workerUrl.toJSON());
-            setNode(newNode);
-
-            const events = await newNode.events_channel();
+            const events = await nodeRef.current.events_channel();
             events.onmessage = onNodeEvent;
             setEvents(events);
 
-            // console.log('start: ' + events.name);
+            await nodeRef.current.start(newConfig);
 
-            await newNode.start(newConfig);
-
-            const lpid = await newNode.local_peer_id();
+            const lpid = await nodeRef.current.local_peer_id();
             
             setStats(prev => ({
                 ...prev,
