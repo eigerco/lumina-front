@@ -3,7 +3,7 @@
 // Imports
 // ------------
 import React, { useState, useEffect, useRef, useContext, useLayoutEffect } from 'react';
-import init, { Network, NodeClient, NodeConfig } from 'lumina-node-shim';
+import init, { Network, NodeClient, NodeConfig } from '@fl0rek/lumina-node';
 import Textarea from './Textarea';
 import Button from '@parts/Button';
 import Status from './Status';
