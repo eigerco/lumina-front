@@ -166,9 +166,9 @@ const Form = () => {
     }
 
     // NOTE • Start the node
-    const startNode = async () => {
+    const startNode = async (nodeRef) => {
         if (!bootnodes || bootnodes.length === 0) {
-            console.error('Genesis hash and at least one bootnode are required.');
+            alert('Genesis hash and at least one bootnode are required.');
             return;
         }
         try {
@@ -204,7 +204,7 @@ const Form = () => {
 
             // called when we have new head header
             const onNewHead = async (height) => {
-                const header = await node.getHeaderByHeight(BigInt(height));
+                const header = await nodeRef.getHeaderByHeight(BigInt(height));
 
                 setStats((stats) => {
                     return {
@@ -218,7 +218,7 @@ const Form = () => {
 
             // called when we synchronized any headers
             const onAddedHeaders = async () => {
-                const info = await node.syncerInfo();
+                const info = await nodeRef.syncerInfo();
                 const storedRanges = normalizeStoredRanges(info.subjective_head, info.stored_headers);
                 const syncedPercentage = syncingPercentage(storedRanges);
 
@@ -275,9 +275,9 @@ const Form = () => {
             events.onmessage = onNodeEvent;
             setEvents(events);
 
-            await node.start(newConfig);
+            await nodeRef.start(newConfig);
 
-            const lpid = await node.localPeerId();
+            const lpid = await nodeRef.localPeerId();
             
             setStats(prev => ({
                 ...prev,
@@ -304,7 +304,7 @@ const Form = () => {
 
     useEffect(() => {
         if(nodeInitiate) {
-            startNode();
+            startNode(node);
             
             const timer = setTimeout(() => {
                 setNodeInitiate(false);
@@ -313,7 +313,7 @@ const Form = () => {
     
             return () => clearTimeout(timer);
         }
-    }, [nodeInitiate]);
+    }, [nodeInitiate, node]);
 
 
     // Predicted amount of headers in syncing window (last 30 days / ~12s block time)
