@@ -23,7 +23,7 @@
     "eslint-config-next": "^14.0.2",
     "framer-motion": "^11.0.20",
     "gsap": "^3.12.5",
-    "lumina-node-wasm": "file:public/lumina-node-wasm",
+    "lumina-node": "^0.3.1",
     "mobx-react-lite": "^4.0.7",
     "next": "^14.2.10",
     "next-image-export-optimizer": "^1.12.3",
