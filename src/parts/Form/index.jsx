@@ -3,9 +3,10 @@
 // Imports
 // ------------
 import React, { useState, useEffect, useRef, useContext, useLayoutEffect } from 'react';
-import init, { Network, NodeClient, NodeConfig } from '@fl0rek/lumina-node';
+import { spawnNode, Network, NodeClient, NodeConfig } from 'lumina-node';
 import Textarea from './Textarea';
 import Button from '@parts/Button';
+import { LuminaContext } from  '@parts/Lumina';
 import Status from './Status';
 import Terminal from './Terminal';
 import Icon from '@icon';
@@ -19,20 +20,18 @@ import { usePlausible } from 'next-plausible';
 // ------------
 import { Blanket, Jacket, ImageContainer, Container, Title, NetworkList, NetworkItem } from './styles';
 
-let worker_started = false;
-
 // Component
 // ------------
 const Form = () => {
     // NOTE • Contexts
     const { begin, setBegin } = useContext(GlobalContext);
+    const node = useContext(LuminaContext);
 
     // NOTE • Track Plausible
     const plausible = usePlausible();
 
     // NOTE • States
     const [display, setDisplay] = useState(true);
-    const [node, setNode] = useState();
     const [_events, setEvents] = useState();
     const [network, setNetwork] = useState();
     const [bootnodes, setBootnodes] = useState([]);
@@ -65,15 +64,10 @@ const Form = () => {
 
     // NOTE • Refs are needed to access state from within events.onmessage callbacks
     const statsRef = useRef(stats);
-    const nodeRef = useRef(node);
 
     useEffect(() => {
         statsRef.current = stats;
     }, [stats]);
-
-    useEffect(() => {
-        nodeRef.current = node;
-    }, [node]);
 
     // NOTE • Browser detection
     useLayoutEffect(() => {
@@ -87,8 +81,6 @@ const Form = () => {
     const initConfig = () => {
         const tempConfig = NodeConfig.default(Network.Mainnet)
         setNetwork(tempConfig.network);
-        // todo: remove it completely
-        // setHash('this field will be removed');
         setBootnodes(tempConfig.bootnodes);
         setCombinedConfig(tempConfig);
     };
@@ -98,31 +90,16 @@ const Form = () => {
 
     // NOTE • Load the config and initialize the WASM module when the page loads
     useEffect(() => {
-        const initWasm = async () => {
-            try {
-                setNode(await init());
-                initConfig();
-            } catch (error) {
-                console.error('Failed to initialize WASM:', error);
-            }
+        if (node) {
+            initConfig();
         }
-        if (!worker_started) {
-            worker_started = true;
-            initWasm();
-        }
-    }, []);
+    }, [node]);
 
     // NOTE • Periodically poll node for data that doesn't come from events
     useEffect(() => {
         if(node && statusInitiated) {
             const timer = setInterval(async () => {
-                const peers = await node.connected_peers();
-
-                if(peers) {
-                    const newChannel = await node.events_channel();
-
-                    // console.log('latest: ' + newChannel.name);
-                }
+                const peers = await node.connectedPeers();
 
                 setStats((stats) => {
                     return {
@@ -140,7 +117,7 @@ const Form = () => {
 
     // NOTE • Periodically track user activity
     useEffect(() => {
-        if(node) {
+        if (node) {
             const timer = setInterval(async () => {
                 plausible('Live starts:', {
                     props: {
@@ -157,10 +134,10 @@ const Form = () => {
     const handleNetwork = (e) => {
         e.preventDefault();
 
-        const number = parseInt(e.target.value);
-        const newConfig = NodeConfig.default(number);
-        setNetwork(number);
+        const networkId = parseInt(e.target.value);
+        const newConfig = NodeConfig.default(networkId);
 
+        setNetwork(networkId);
         setBootnodes(newConfig.bootnodes);
         setCombinedConfig(newConfig)
     }
@@ -168,7 +145,6 @@ const Form = () => {
     const handleBnodes = (e) => {
         e.preventDefault();
 
-        // console.log(e.target.value.split('\n'));
         const value = e.target.value.split('\n');
 
         setBootnodes(value);
@@ -228,7 +204,7 @@ const Form = () => {
 
             // called when we have new head header
             const onNewHead = async (height) => {
-                const header = await nodeRef.current.get_header_by_height(BigInt(height));
+                const header = await node.getHeaderByHeight(BigInt(height));
 
                 setStats((stats) => {
                     return {
@@ -242,7 +218,7 @@ const Form = () => {
 
             // called when we synchronized any headers
             const onAddedHeaders = async () => {
-                const info = await nodeRef.current.syncer_info();
+                const info = await node.syncerInfo();
                 const storedRanges = normalizeStoredRanges(info.subjective_head, info.stored_headers);
                 const syncedPercentage = syncingPercentage(storedRanges);
 
@@ -295,13 +271,13 @@ const Form = () => {
             let newConfig = combinedConfig;
             setCombinedConfig({ bootnodes: bootnodes });
 
-            const events = await nodeRef.current.events_channel();
+            const events = await node.eventsChannel();
             events.onmessage = onNodeEvent;
             setEvents(events);
 
-            await nodeRef.current.start(newConfig);
+            await node.start(newConfig);
 
-            const lpid = await nodeRef.current.local_peer_id();
+            const lpid = await node.localPeerId();
             
             setStats(prev => ({
                 ...prev,
@@ -346,11 +322,11 @@ const Form = () => {
     // Takes network head and ranges of headers node synchronized and calculates ranges
     // position inside the syncing window
     const normalizeStoredRanges = (networkHead, storedRanges) => {
-        const syncingWindowTail = networkHead - approxHeadersToSync;
+        const syncingWindowTail = Number(networkHead) - approxHeadersToSync;
         // Normalize stored ranges wrt their position in syncing window
         const normalizedRanges = storedRanges.map((range) => {
-            const adjustedStart = Math.max(range.start, syncingWindowTail);
-            const adjustedEnd = Math.max(range.end, syncingWindowTail);
+            const adjustedStart = Math.max(Number(range.start), syncingWindowTail);
+            const adjustedEnd = Math.max(Number(range.end), syncingWindowTail);
             return { 
                 start: adjustedStart,
                 end: adjustedEnd
