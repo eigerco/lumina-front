@@ -3,7 +3,7 @@
 // Imports
 // ------------
 import React, { useState, useEffect, useRef, useContext, useLayoutEffect } from 'react';
-import { spawnNode, Network, NodeClient, NodeConfig } from 'lumina-node';
+import { Network, NodeConfig } from 'lumina-node';
 import Textarea from './Textarea';
 import Button from '@parts/Button';
 import { LuminaContext } from  '@parts/Lumina';
