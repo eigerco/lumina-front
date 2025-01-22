@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const withTM = require('next-transpile-modules')(['gsap']);
+const CopyPlugin = require("copy-webpack-plugin");
 
 const nextConfig = {
 	...withTM,
@@ -34,6 +35,37 @@ const nextConfig = {
 		// see https://styled-components.com/docs/tooling#babel-plugin for more info on the options.
 		styledComponents: true,
 	},
+	webpack: (config, { dev, isServer }) => {
+		config.experiments = {
+			asyncWebAssembly: true,
+			topLevelAwait: true,
+			layers: true,
+		};
+		// workaround for wasm from https://github.com/vercel/next.js/issues/29362#issuecomment-1973553746
+		if (!dev && isServer) {
+			webassemblyModuleFilename = "./../server/chunks/[modulehash].wasm";
+
+			const patterns = [];
+
+			const destinations = [
+				"../static/wasm/[name][ext]", // -> .next/static/wasm
+				"./static/wasm/[name][ext]",  // -> .next/server/static/wasm
+				"."                           // -> .next/server/chunks (for some reason this is necessary)
+			];
+			for (const dest of destinations) {
+				patterns.push({
+					context: ".next/server/chunks",
+					from: ".",
+					to: dest,
+					filter: (resourcePath) => resourcePath.endsWith(".wasm"),
+					noErrorOnMissing: true
+				});
+			}
+
+			config.plugins.push(new CopyPlugin({ patterns }));
+		}
+		return config;
+	}
 };
 
 module.exports = nextConfig;
