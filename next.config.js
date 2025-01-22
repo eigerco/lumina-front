@@ -37,7 +37,7 @@ const nextConfig = {
 	},
 	webpack: (
 		config,
-		{ buildId, dev, isServer, defaultLoaders, nextRuntime, webpack },
+		{ dev, isServer },
 	) => {
 		config.experiments = {
 			asyncWebAssembly: true,
