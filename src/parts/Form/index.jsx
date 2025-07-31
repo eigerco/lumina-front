@@ -211,7 +211,7 @@ const Form = () => {
                         ...stats,
                         networkHeadHeight: height,
                         networkHeadHash: header.commit.block_id.hash,
-                        networkHeadDataSquare: `${header.dah.row_roots.length}x${header.dah.column_roots.length} shares`,
+                        networkHeadDataSquare: `${header.dah.rowRoots().length}x${header.dah.columnRoots().length} shares`,
                     }
                 });
             }
